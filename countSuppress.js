@@ -16,33 +16,37 @@ async function hideCounter() {
   while (allCounters.length === 0 && attempts < maxAttempts) {
     allCounters = Array.from(document.querySelectorAll(".item_counter"));
     attempts++;
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       setTimeout(resolve, delayBetweenAttempts);
     });
   }
 
   if (allCounters.length !== 0) {
     let today_counter = document.querySelector(
-      "#filter_today > span.item_content > small"
+      "#filter_today > span.item_content > small.item_counter"
     );
     let inbox_counter = document.querySelector(
-      "#filter_inbox > span.item_content > small"
+      "#filter_inbox > span.item_content > small.item_counter"
     );
     // This data-id needs to be changed for your setup by grabbing the correct one
     // for the filter you want to preserve via "inspect element"
     let undatedNonstretch = document.querySelector(
-      'li[data-id="2261219719"] > span.item_content > small'
+      'li[data-id="2261219719"] > span.item_content > small.item_counter'
     );
 
     filterCountsToKeep = new Set([
       today_counter,
       inbox_counter,
-      undatedNonstretch
+      undatedNonstretch,
     ]);
     filtersToChange = new Set(
-      allCounters.filter(x => !filterCountsToKeep.has(x))
+      allCounters.filter((x) => !filterCountsToKeep.has(x))
     );
-    filtersToChange.forEach(x => (x.style.display = "none"));
+
+    if (undatedNonstretch.innerText === "") {
+      filtersToChange.add(document.querySelector('li[data-id="2261219719"]'));
+    }
+    filtersToChange.forEach((x) => (x.style.display = "none"));
   }
 }
 
